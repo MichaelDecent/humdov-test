@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 from sqlalchemy.orm import Session
 
-from app.database import SessionLocal
+from app.core.db import SessionLocal
 from app import models
 
 
@@ -76,4 +76,3 @@ if __name__ == "__main__":
         seed(db)
     finally:
         db.close()
-

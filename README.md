@@ -43,7 +43,16 @@ Interactive docs live at `/docs` when the server is running.
 - Change DB path via `DATABASE_URL` (e.g., `sqlite:///./dev.db`).
 - To regenerate DB from scratch: delete `app.db`, run `alembic upgrade head`, then re-run the seed script.
 
+**Project Structure**
+- `app/main.py`: FastAPI app and router mounting.
+- `app/api/v1/*`: Versioned API routers.
+- `app/core/config.py`: App settings (e.g., `DATABASE_URL`).
+- `app/core/db.py`: Engine, `SessionLocal`, `Base`, and `get_db` dependency.
+- `app/models/*.py`: ORM models split by entity (`user.py`, `post.py`, `like.py`); `app/models.py` aggregates.
+- `app/repositories/*.py`: Data access per entity (`user_repo.py`, `post_repo.py`, `like_repo.py`).
+- `app/services/*.py`: Business logic (`user_service.py`, `post_service.py`, `interaction_service.py`, `feed_service.py`).
+
 **Sanity Check (after seeding)**
-1. `GET /users` — note user IDs.
-2. `GET /posts` — observe posts.
-3. `GET /feed/1` — user1 prefers authors 3 and 5; you should see their posts boosted while still reflecting recency and light popularity.
+1. `GET /api/v1/users` — note user IDs.
+2. `GET /api/v1/posts` — observe posts.
+3. `GET /api/v1/feed/1` — user1 prefers authors 3 and 5; you should see their posts boosted while still reflecting recency and light popularity.
