@@ -7,7 +7,7 @@ from app import schemas
 from app.services import user_service
 
 
-router = APIRouter(prefix="/users", tags=["users"])
+router = APIRouter()
 
 
 @router.post("", response_model=schemas.UserRead, status_code=201)

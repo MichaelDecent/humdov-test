@@ -1,15 +1,27 @@
 from fastapi import FastAPI
 
-from .api.v1.users import router as users_router
-from .api.v1.posts import router as posts_router
-from .api.v1.feed import router as feed_router
+from .core.db import engine, Base, SessionLocal
+from .api.v1 import api_router
+from app import models
 
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Personalized Post Feed API")
 
-prefix = "/api/v1"
+app.include_router(api_router)
 
-# Mount versioned API at /api/v1
-app.include_router(users_router, prefix=prefix)
-app.include_router(posts_router, prefix=prefix)
-app.include_router(feed_router, prefix=prefix)
+
+@app.on_event("startup")
+def seed_if_empty() -> None:
+    try:
+        from scripts.seed import seed
+    except Exception:
+        return
+
+    db = SessionLocal()
+    try:
+        has_users = db.query(models.User).count() > 0
+        if not has_users:
+            seed(db)
+    finally:
+        db.close()

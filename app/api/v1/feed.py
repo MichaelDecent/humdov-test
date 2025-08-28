@@ -8,7 +8,7 @@ from app.services import user_service
 from app.services.feed_service import get_feed
 
 
-router = APIRouter(prefix="/feed", tags=["feed"])
+router = APIRouter()
 
 
 @router.get("/{user_id}", response_model=List[schemas.FeedItem])

@@ -13,5 +13,4 @@ def get_user(db: Session, user_id: int):
 
 
 def list_users(db: Session, skip: int = 0, limit: int = 100):
-    return user_repo.list(db, skip, limit)
-
+    return user_repo.list_users(db, skip, limit)

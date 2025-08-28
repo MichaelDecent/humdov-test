@@ -15,5 +15,4 @@ def get_post(db: Session, post_id: int):
 
 
 def list_posts(db: Session, skip: int = 0, limit: int = 100):
-    return post_repo.list(db, skip, limit)
-
+    return post_repo.list_posts(db, skip, limit)
