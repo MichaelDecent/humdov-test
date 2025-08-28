@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+  api:
+    build: .
+    container_name: homdov-api
+    environment:
+      - DATABASE_URL=sqlite:////data/app.db
+    ports:
+      - "8000:8000"
+    volumes:
+      - app_data:/data
+      # Uncomment the next line for live-reload in development
+      # - ./:/app
+    # For dev, you can also enable reload by uncommenting:
+    # command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+volumes:
+  app_data:
+

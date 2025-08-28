@@ -3,7 +3,7 @@
 - **Stack:** Python, FastAPI, SQLite, SQLAlchemy, Alembic
 - **Features:** Users, posts, likes, personalized feed, seed data.
 
-**Quick Start**
+**Quick Start (Local)**
 - Create venv: `python -m venv .venv && source .venv/bin/activate`
 - Install deps: `pip install -r requirements.txt`
 - Run migrations: `alembic upgrade head`
@@ -11,6 +11,12 @@
 - Start API: `uvicorn app.main:app --reload`
 
 By default, the app uses `sqlite:///./app.db`. Override with `DATABASE_URL`.
+
+**Docker**
+- Build and run: `docker compose up --build`
+- App URL: `http://localhost:8000`
+- Persistence: SQLite stored at `/data/app.db` in the container, backed by the `app_data` volume.
+- To develop with live reload, uncomment the bind mount and `--reload` command in `docker-compose.yml`.
 
 **Endpoints**
 - `POST /api/v1/users` — Create user. Body: `{ "username": "alice" }`
