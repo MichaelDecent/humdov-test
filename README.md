@@ -39,6 +39,7 @@ By default, the app uses `sqlite:///./app.db`. Override with `DATABASE_URL`.
   - `GET /api/v1/feed/{user_id}?limit=20&offset=0` — Personalized feed for the authenticated user only.
 
 Interactive docs live at `/docs` when the server is running.
+Hosted Swagger UI: https://humdov-test.onrender.com/docs
 
 **Pesonalized Feed Recommendation Approach**
 - We compute a simple weighted score per post and sort descending:
