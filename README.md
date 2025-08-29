@@ -70,3 +70,7 @@ Interactive docs live at `/docs` when the server is running.
 Config:
 - `JWT_SECRET` (default `dev-secret-change-me`)
 - `ACCESS_TOKEN_EXPIRE_MINUTES` (default `60`)
+
+**Testing**
+- Run tests: `make test` (or `pytest`)
+- Notes: Tests use a temporary SQLite database and a fixed `JWT_SECRET` so they do not affect local dev data.

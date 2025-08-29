@@ -1,4 +1,4 @@
-.PHONY: compose-up compose-down logs clean
+.PHONY: compose-up compose-down logs clean test
 
 compose-up:
 	docker compose up -d --build
@@ -11,3 +11,6 @@ logs:
 
 clean:
 	docker compose down -v
+
+test:
+	PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=. pytest -q
