@@ -10,8 +10,9 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String(50), unique=True, nullable=False, index=True)
+    # Nullable to avoid breaking existing seeded data
+    password_hash = Column(String(256), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     posts = relationship("Post", back_populates="author", cascade="all, delete-orphan")
     like_assocs = relationship("Like", back_populates="user", cascade="all, delete-orphan")
-

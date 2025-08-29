@@ -21,13 +21,17 @@ def _author_pref_score(authors_liked: set[int], author_id: int) -> float:
 
 
 def _popularity_score(db: Session, post_id: int) -> float:
-    count = db.execute(select(func.count(models.Like.id)).where(models.Like.post_id == post_id)).scalar_one()
+    count = db.execute(
+        select(func.count(models.Like.id)).where(models.Like.post_id == post_id)
+    ).scalar_one()
     if count <= 0:
         return 0.0
     return 1.0 + log2(count)
 
 
-def get_feed(db: Session, user_id: int, limit: int = 20, offset: int = 0) -> List[Tuple[models.Post, float, str]]:
+def get_feed(
+    db: Session, user_id: int, limit: int = 20, offset: int = 0
+) -> List[Tuple[models.Post, float, str]]:
     authors = set(
         db.execute(
             select(models.Post.author_id)
@@ -36,7 +40,9 @@ def get_feed(db: Session, user_id: int, limit: int = 20, offset: int = 0) -> Lis
         ).scalars()
     )
     liked_post_ids = set(
-        db.execute(select(models.Like.post_id).where(models.Like.user_id == user_id)).scalars()
+        db.execute(
+            select(models.Like.post_id).where(models.Like.user_id == user_id)
+        ).scalars()
     )
     candidates = (
         db.execute(
@@ -59,4 +65,3 @@ def get_feed(db: Session, user_id: int, limit: int = 20, offset: int = 0) -> Lis
         scored.append((p, score, reason))
     scored.sort(key=lambda t: t[1], reverse=True)
     return scored[offset : offset + limit]
-

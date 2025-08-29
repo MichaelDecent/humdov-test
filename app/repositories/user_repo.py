@@ -19,5 +19,4 @@ def get(db: Session, user_id: int) -> Optional[models.User]:
 
 def list_users(db: Session, skip: int = 0, limit: int = 100) -> List[models.User]:
     stmt = select(models.User).offset(skip).limit(limit)
-    # Convert ScalarResult to a concrete list of model instances
     return list(db.execute(stmt).scalars())

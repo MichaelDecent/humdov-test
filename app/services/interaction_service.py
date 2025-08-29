@@ -20,4 +20,3 @@ def unlike_post(db: Session, user_id: int, post_id: int) -> bool:
         return False
     like_repo.delete(db, existing)
     return True
-

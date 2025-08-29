@@ -5,18 +5,15 @@ from sqlalchemy.orm import Session
 from app.core.db import get_db
 from app import schemas
 from app.services import user_service
+from app.core.security import get_current_user
 
 
 router = APIRouter()
 
 
-@router.post("", response_model=schemas.UserRead, status_code=201)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    try:
-        return user_service.create_user(db, user)
-    except Exception:
-        raise HTTPException(status_code=400, detail="Username already exists")
-
+@router.get("/me", response_model=schemas.UserRead)
+def me(current_user=Depends(get_current_user)):
+    return current_user
 
 @router.get("/{user_id}", response_model=schemas.UserRead)
 def read_user(user_id: int, db: Session = Depends(get_db)):

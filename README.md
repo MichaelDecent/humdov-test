@@ -62,3 +62,14 @@ Interactive docs live at `/docs` when the server is running.
 1. `GET /api/v1/users` — note user IDs.
 2. `GET /api/v1/posts` — observe posts.
 3. `GET /api/v1/feed/1` — user1 prefers authors 3 and 5; you should see their posts boosted while still reflecting recency and light popularity.
+
+**Authentication (JWT)**
+- Register: `POST /api/v1/auth/register` with `{ "username": "alice", "password": "secret" }`
+- Login: `POST /api/v1/auth/login` with `{ "username": "alice", "password": "secret" }` ⇒ returns `{ "access_token": "...", "token_type": "bearer" }`
+- Me: `GET /api/v1/users/me` with header `Authorization: Bearer <token>`
+
+Config:
+- `JWT_SECRET` (default `dev-secret-change-me`)
+- `ACCESS_TOKEN_EXPIRE_MINUTES` (default `60`)
+
+Notes: Passwords use PBKDF2-HMAC-SHA256 with per-user salts. The `users.password_hash` column is added automatically on startup for SQLite if missing.
