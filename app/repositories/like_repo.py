@@ -6,7 +6,9 @@ from app import models
 
 
 def get(db: Session, user_id: int, post_id: int) -> Optional[models.Like]:
-    stmt = select(models.Like).where(models.Like.user_id == user_id, models.Like.post_id == post_id)
+    stmt = select(models.Like).where(
+        models.Like.user_id == user_id, models.Like.post_id == post_id
+    )
     return db.execute(stmt).scalar_one_or_none()
 
 
@@ -27,4 +29,3 @@ def count_for_post(db: Session, post_id: int) -> int:
     return db.execute(
         select(func.count(models.Like.id)).where(models.Like.post_id == post_id)
     ).scalar_one()
-

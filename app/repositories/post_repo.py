@@ -18,5 +18,10 @@ def get(db: Session, post_id: int) -> Optional[models.Post]:
 
 
 def list_posts(db: Session, skip: int = 0, limit: int = 100) -> List[models.Post]:
-    stmt = select(models.Post).order_by(models.Post.created_at.desc()).offset(skip).limit(limit)
+    stmt = (
+        select(models.Post)
+        .order_by(models.Post.created_at.desc())
+        .offset(skip)
+        .limit(limit)
+    )
     return list(db.execute(stmt).scalars())

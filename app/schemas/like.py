@@ -14,4 +14,3 @@ class LikeRead(BaseModel):
 
     class Config:
         from_attributes = True
-

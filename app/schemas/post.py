@@ -17,4 +17,3 @@ class PostRead(PostBase):
 
     class Config:
         from_attributes = True
-

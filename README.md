@@ -12,42 +12,41 @@
 
 By default, the app uses `sqlite:///./app.db`. Override with `DATABASE_URL`.
 
-**Docker**
-- Build and run: `docker compose up --build`
+**Docker (Local)**
+- Using Makefile (recommended):
+  - Start: `make compose-up`
+  - Logs: `make logs`
+  - Stop: `make compose-down`
+  - Clean (also remove volumes): `make clean`
+- Directly with Compose: `docker compose up --build`
 - App URL: `http://localhost:8000`
-- Persistence: SQLite stored at `/data/app.db` in the container, backed by the `app_data` volume.
-- To develop with live reload, uncomment the bind mount and `--reload` command in `docker-compose.yml`.
+- Persistence: SQLite at `/data/app.db` via the `app_data` volume.
+- Dev tip: For live reload, uncomment the bind mount and `--reload` command in `docker-compose.yml`.
 
 **Endpoints**
-- `POST /api/v1/users` — Create user. Body: `{ "username": "alice" }`
-- `GET /api/v1/users` — List users.
-- `GET /api/v1/users/{id}` — Get a user.
-- `POST /api/v1/posts` — Create post. Body: `{ "author_id": 1, "content": "hello" }`
-- `GET /api/v1/posts` — List posts (newest first).
-- `GET /api/v1/posts/{id}` — Get a post.
-- `POST /api/v1/posts/{post_id}/like` — Like a post. Body: `{ "user_id": 1 }`.
-- `DELETE /api/v1/posts/{post_id}/like?user_id=1` — Unlike a post.
-- `GET /api/v1/feed/{user_id}?limit=20&offset=0` — Personalized feed.
+- Public:
+  - `POST /api/v1/auth/register` — Create user with password (`{"username","password"}`).
+  - `POST /api/v1/auth/login` — Obtain JWT token.
+  - `GET /api/v1/users` — List users.
+  - `GET /api/v1/users/{id}` — Get a user.
+  - `GET /api/v1/posts` — List posts (newest first).
+  - `GET /api/v1/posts/{id}` — Get a post.
+- Secured (Authorization: `Bearer <token>`):
+  - `GET /api/v1/users/me` — Current user info.
+  - `POST /api/v1/posts` — Create post. Body: `{ "author_id": <your_id>, "content": "..." }` (author must match token).
+  - `POST /api/v1/posts/{post_id}/like` — Like post. Body: `{ "user_id": <your_id> }` (must match token).
+  - `DELETE /api/v1/posts/{post_id}/like?user_id=<your_id>` — Unlike post (must match token).
+  - `GET /api/v1/feed/{user_id}?limit=20&offset=0` — Personalized feed for the authenticated user only.
 
 Interactive docs live at `/docs` when the server is running.
 
-**Recommendation Approach**
+**Pesonalized Feed Recommendation Approach**
 - We compute a simple weighted score per post and sort descending:
   - Recency: `1 / (1 + age_days)` — fresher posts score higher.
   - Author preference: `1.0` if the user has previously liked any post by the post’s author, else `0.0`.
   - Popularity: `1 + log2(like_count)`, lightly normalized.
 - Final score: `0.6*recency + 0.3*author_pref + 0.1*popularity_normalized`.
 - Exclusions: We hide posts authored by the viewing user and posts they already liked.
-
-**Trade-offs**
-- Very simple, transparent ranking that’s fast on SQLite and easy to inspect.
-- Not collaborative yet; could extend with user–user similarity, topic tags, or embeddings.
-- Popularity is lightly weighted to avoid runaway feedback loops.
-
-**Dev Notes**
-- Migrations are pre-baked in `alembic/versions/0001_initial.py` and use metadata from `app.models`.
-- Change DB path via `DATABASE_URL` (e.g., `sqlite:///./dev.db`).
-- To regenerate DB from scratch: delete `app.db`, run `alembic upgrade head`, then re-run the seed script.
 
 **Project Structure**
 - `app/main.py`: FastAPI app and router mounting.
@@ -71,5 +70,3 @@ Interactive docs live at `/docs` when the server is running.
 Config:
 - `JWT_SECRET` (default `dev-secret-change-me`)
 - `ACCESS_TOKEN_EXPIRE_MINUTES` (default `60`)
-
-Notes: Passwords use PBKDF2-HMAC-SHA256 with per-user salts. The `users.password_hash` column is added automatically on startup for SQLite if missing.

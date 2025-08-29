@@ -7,4 +7,3 @@ class FeedItem(BaseModel):
     post: PostRead
     score: float
     reason: str
-
